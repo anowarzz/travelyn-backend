@@ -3,6 +3,8 @@ import { User } from "./user.model";
 
 const createUser = async (payload: Partial<IUser>) => {
 
+
+
   const { name, email } = payload;
 
   const user = await User.create({
