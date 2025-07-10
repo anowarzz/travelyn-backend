@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true,
+      unique: [true, "Email must be unique"],
       lowercase: true,
       trim: true,
     },
@@ -56,7 +56,6 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: Object.values(Role),
       default: Role.USER,
-      required: [true, "Role is required"],
     },
   },
   {
