@@ -10,7 +10,8 @@ export default tseslint.config(
   tseslint.configs.stylistic,
   {
     rules: {
-      "no-unused-var": "error",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error",
       "no-console": "warn",
     },
   }

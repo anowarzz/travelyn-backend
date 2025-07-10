@@ -1,18 +1,19 @@
+/* eslint-disable no-console */
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
-import { config } from "./app/config";
+import { envVars } from "./app/config/env";
 
 let server: Server;
 
 const startServer = async () => {
   try {
-    await mongoose.connect(config.database_url as string);
+    await mongoose.connect(envVars.DB_URL as string);
 
     console.log("Connected to MongoDB");
 
-    server = app.listen(config.port, () => {
-      console.log(`Server is running on port ${config.port}`);
+    server = app.listen(envVars.PORT, () => {
+      console.log(`Server is running on port ${envVars.PORT}`);
     });
   } catch (error) {
     console.log(error);
@@ -33,6 +34,8 @@ process.on("unhandledRejection", (err) => {
   }
   process.exit(1);
 });
+
+// prettier-ignore-end
 
 // Uncaught exception handling
 process.on("uncaughtException", (err) => {
