@@ -13,4 +13,4 @@ router.post(
 
 router.get("/all-users", userControllers.getAllUsers);
 
-export const userRoutes = router;
+export const UserRoutes = router;

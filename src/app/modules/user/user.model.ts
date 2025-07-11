@@ -25,7 +25,6 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      select: false,
     },
     phone: {
       type: String,
