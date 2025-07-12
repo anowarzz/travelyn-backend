@@ -1,17 +1,11 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { JwtPayload } from "jsonwebtoken";
-import { envVars } from "../../config/env";
-import AppError from "../../errorHelpers/appError";
-import { validateRequest } from "../../middlewares/validateRequest";
-import { verifyToken } from "../../utils/jwt";
-import { userControllers } from "./user.controller";
-import { createUserZodSchema } from "./user.validation";
+import { Router } from "express";
 import { checkAuth } from "../../middlewares/checkAuth";
+import { validateRequest } from "../../middlewares/validateRequest";
+import { userControllers } from "./user.controller";
 import { Role } from "./user.interface";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validation";
 
 const router = Router();
-
-
 
 router.post(
   "/register",
@@ -19,6 +13,18 @@ router.post(
   userControllers.createUser
 );
 
-router.get("/all-users", checkAuth(Role.ADMIN, Role.SUPER_ADMIN)  ,userControllers.getAllUsers);
+router.get(
+  "/all-users",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  userControllers.getAllUsers
+);
+
+
+router.patch(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  validateRequest(updateUserZodSchema),
+  userControllers.updateUser
+);
 
 export const UserRoutes = router;
