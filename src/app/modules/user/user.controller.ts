@@ -8,13 +8,30 @@ import { userServices } from "./user.service";
 // create a user
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    
     const user = await userServices.createUser(req.body);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
       message: "User Created Successfully",
+      data: user,
+    });
+  }
+);
+
+// update a user
+const updateUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const verifiedToken = req.user;
+    const payload = req.body;
+
+    const user = await userServices.updateUser(userId, payload, verifiedToken);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Updated Successfully",
       data: user,
     });
   }
@@ -38,4 +55,5 @@ const getAllUsers = catchAsync(
 export const userControllers = {
   createUser,
   getAllUsers,
+  updateUser,
 };

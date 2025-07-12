@@ -3,9 +3,11 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import { envVars } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
+//  connect with database
 const startServer = async () => {
   try {
     await mongoose.connect(envVars.DB_URL as string);
@@ -20,7 +22,11 @@ const startServer = async () => {
   }
 };
 
-startServer();
+//  start server and seed a super admin
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 // Unhandled rejection handling
 process.on("unhandledRejection", (err) => {
