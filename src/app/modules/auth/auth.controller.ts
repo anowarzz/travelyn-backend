@@ -5,21 +5,14 @@ import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/appError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
+import { setAuthCookie } from "../../utils/setCookie";
 import { AuthServices } from "./auth.service";
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const loginInfo = await AuthServices.credentialsLogin(req.body);
 
-    res.cookie("accessToken", loginInfo.accessToken, {
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.cookie("refreshToken", loginInfo.refreshToken, {
-      httpOnly: true,
-      secure: false,
-    });
+    setAuthCookie(res, loginInfo);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -42,6 +35,8 @@ const getNewAccessToken = catchAsync(
     }
 
     const tokenInfo = await AuthServices.getNewAccessToken(refreshToken);
+
+    setAuthCookie(res, tokenInfo);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
