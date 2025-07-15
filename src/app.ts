@@ -6,14 +6,14 @@ import passport from "passport";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import notFound from "./app/middlewares/notFound";
 import router from "./app/routes";
-
+import "./app/config/passport";
 
 // create app
 const app = express();
 
 // middlewares
 app.use(expressSession({
-  secret: process.env.SESSION_SECRET || "default_secret",
+  secret: "My secret",
   resave: false,
   saveUninitialized: false,
 }));

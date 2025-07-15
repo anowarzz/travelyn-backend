@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import passport from "passport";
 import {
   Strategy as GoogleStrategy,
@@ -42,7 +43,7 @@ passport.use(
             auths: [
               {
                 provider: "google",
-                profileId: profile.id,
+                providerId: profile.id,
               },
             ],
           });
@@ -55,3 +56,21 @@ passport.use(
     }
   )
 );
+
+// serialize user
+
+passport.serializeUser((user: any, done: (err: any, id?: unknown) => void) => {
+  done(null, user._id);
+});
+
+// deserialize user
+
+passport.deserializeUser(async (id: string, done: any) => {
+  try {
+    const user = User.findById(id);
+    done(null, user);
+  } catch (error) {
+    console.log(error);
+    done(error);
+  }
+});

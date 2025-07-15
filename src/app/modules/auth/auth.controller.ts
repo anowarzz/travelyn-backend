@@ -2,10 +2,13 @@ import { Request } from "express";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Response } from "express";
 import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
+import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/appError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { setAuthCookie } from "../../utils/setCookie";
+import { createUserToken } from "../../utils/userTokens";
 import { AuthServices } from "./auth.service";
 
 const credentialsLogin = catchAsync(
@@ -74,15 +77,14 @@ const logOut = catchAsync(
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
-   
 
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
 
- await AuthServices.resetPassword(
+    await AuthServices.resetPassword(
       oldPassword,
       newPassword,
-      decodedToken
+      decodedToken as JwtPayload
     );
 
     sendResponse(res, {
@@ -93,10 +95,29 @@ const resetPassword = catchAsync(
     });
   }
 );
+// google callback
+const googleCallBack = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    console.log(user, "user in google callback");
+
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "User not found");
+    }
+
+    const tokenInfo = createUserToken(user);
+
+    setAuthCookie(res, tokenInfo);
+
+    res.redirect(envVars.FRONTEND_URL);
+  }
+);
 
 export const AuthControllers = {
   credentialsLogin,
   getNewAccessToken,
   logOut,
   resetPassword,
+  googleCallBack,
 };
