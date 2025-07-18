@@ -12,6 +12,7 @@ export const globalErrorHandler = (
 ) => {
   let statusCode = 500;
   let message = `Something went wrong !`;
+  const errorSources: any = [];
 
   // duplicate error
   if (err.code === 11000) {
@@ -19,15 +20,25 @@ export const globalErrorHandler = (
     statusCode = 400;
     message = `${matchedArray[1]} already exists!`;
   }
-// cast error   / Object Id
-else if (err.name === "CastError") {
+  // cast error   / Object Id
+  else if (err.name === "CastError") {
     statusCode = 400;
     message = `Invalid MogoDB ObjectId . Please provide a valid ObjectId`;
+  } else if (err.name === "ValidationError") {
+    statusCode = 400;
+    const errors = Object.values(err.errors);
 
-}
+    errors.forEach((errorObject: any) =>
+      errorSources.push({
+        path: errorObject.path,
+        message: errorObject.message,
+      })
+    );
 
+    message = `Validation Error Occured`;
+  }
 
-  // custom error 
+  // custom error
   else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -39,7 +50,8 @@ else if (err.name === "CastError") {
   res.status(statusCode).json({
     success: false,
     message,
-    error: err,
+    // error: err,
+    errorSources,
     stack: envVars.NODE_ENV === "development" ? err.stack : null,
   });
 };
