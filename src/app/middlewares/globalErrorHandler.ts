@@ -5,7 +5,7 @@ import { envVars } from "../config/env";
 import AppError from "../errorHelpers/appError";
 
 export const globalErrorHandler = (
-  error: any,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,18 +13,33 @@ export const globalErrorHandler = (
   let statusCode = 500;
   let message = `Something went wrong !`;
 
-  if (error instanceof AppError) {
-    statusCode = error.statusCode;
-    message = error.message;
-  } else if (error instanceof Error) {
+  // duplicate error
+  if (err.code === 11000) {
+    const matchedArray = err.message.match(/"([^"]*)"/);
+    statusCode = 400;
+    message = `${matchedArray[1]} already exists!`;
+  }
+// cast error   / Object Id
+else if (err.name === "CastError") {
+    statusCode = 400;
+    message = `Invalid MogoDB ObjectId . Please provide a valid ObjectId`;
+
+}
+
+
+  // custom error 
+  else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+  } else if (err instanceof Error) {
     statusCode = 500;
-    message = error.message;
+    message = err.message;
   }
 
   res.status(statusCode).json({
     success: false,
     message,
-    error,
-    stack: envVars.NODE_ENV === "development" ? error.stack : null,
+    error: err,
+    stack: envVars.NODE_ENV === "development" ? err.stack : null,
   });
 };
