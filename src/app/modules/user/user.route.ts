@@ -19,7 +19,6 @@ router.get(
   userControllers.getAllUsers
 );
 
-
 router.patch(
   "/:id",
   checkAuth(...Object.values(Role)),
