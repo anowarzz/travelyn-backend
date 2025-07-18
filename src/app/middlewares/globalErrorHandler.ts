@@ -24,7 +24,25 @@ export const globalErrorHandler = (
   else if (err.name === "CastError") {
     statusCode = 400;
     message = `Invalid MogoDB ObjectId . Please provide a valid ObjectId`;
-  } else if (err.name === "ValidationError") {
+  }
+
+  // mogoose validation error
+  if (err.name === "ZodError") {
+    statusCode = 400;
+    message = "Validation Error Occurred";
+
+    console.log(err.issues);
+    err.issues.forEach((issue: any) => {
+      errorSources.push({
+        path: issue.path[issue.path.length - 1],
+        // path: issue.path.join("."),
+        message: issue.message,
+      });
+    });
+  }
+
+  // validation error
+  else if (err.name === "ValidationError") {
     statusCode = 400;
     const errors = Object.values(err.errors);
 
