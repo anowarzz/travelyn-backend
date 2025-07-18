@@ -15,7 +15,6 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  
   if (envVars.NODE_ENV === "development") {
     console.error("Global Error Handler:", err);
   }
@@ -39,7 +38,7 @@ export const globalErrorHandler = (
   }
 
   // zod error
-  if (err.name === "ZodError") {
+  else if (err.name === "ZodError") {
     const simplifiedError = handleZodError(err);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
