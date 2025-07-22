@@ -9,7 +9,6 @@ const divisionSchema = new Schema<IDivision>(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
     },
     thumbnail: {
