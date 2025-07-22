@@ -1,6 +1,7 @@
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 
+// CREAT TOUR
 const createTour = async (payload: ITour) => {
   const existingTour = await Tour.findOne({ title: payload.title });
   if (existingTour) {
@@ -69,7 +70,7 @@ const createTourType = async (payload: ITourType) => {
     throw new Error("Tour type already exists.");
   }
 
-  return await TourType.create({ name });
+  return await TourType.create({ name : payload });
 };
 
 // get all tour types
