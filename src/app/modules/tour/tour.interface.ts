@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export interface ITour {
+export interface ITourType {
   name: string;
 }
 

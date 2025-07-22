@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { ITour } from "./tour.interface";
+import { ITour, ITourType } from "./tour.interface";
 
-const tourTypeSchema = new Schema<ITour>(
+const tourTypeSchema = new Schema<ITourType>(
   {
     name: {
       type: String,
@@ -15,7 +15,7 @@ const tourTypeSchema = new Schema<ITour>(
   }
 );
 
-export const TourType = model<ITour>("TourType", tourTypeSchema);
+export const TourType = model<ITourType>("TourType", tourTypeSchema);
 
 const tourSchema = new Schema<ITour>(
   {
