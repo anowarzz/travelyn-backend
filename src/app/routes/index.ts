@@ -13,6 +13,7 @@ const moduleRoutes = [
     path: "/auth",
     route: AuthRoutes,
   },
+  
 ];
 
 moduleRoutes.forEach((route) => {
