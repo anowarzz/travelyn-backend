@@ -32,6 +32,20 @@ const query = req.query ;
 });
 
 
+// get single tour
+const getSingleTour = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  const result = await TourService.getSingleTour(slug);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Tour retrieved successfully",
+    data: result,
+  });
+});
+
+
+
 // update tour
 const updateTour = catchAsync(async (req: Request, res: Response) => {
   const result = await TourService.updateTour(req.params.id, req.body);
@@ -97,6 +111,8 @@ const updateTourType = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+
 // delete tour type
 const deleteTourType = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -116,6 +132,7 @@ export const TourController = {
   deleteTourType,
   updateTourType,
   getAllTours,
+  getSingleTour,
   updateTour,
   deleteTour,
 };

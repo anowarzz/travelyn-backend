@@ -48,6 +48,20 @@ const getAllTours = async (query: Record<string, string>) => {
   };
 };
 
+
+
+
+// GET SINGLE TOUR
+
+const getSingleTour = async (slug: string) => {
+  const tour = await Tour.findOne({ slug });
+
+  return tour;
+};
+
+
+
+
 // UPDATE TOUR
 
 const updateTour = async (id: string, payload: Partial<ITour>) => {
@@ -122,6 +136,7 @@ const deleteTourType = async (id: string) => {
 
 export const TourService = {
   createTour,
+  getSingleTour,
   createTourType,
   deleteTourType,
   updateTourType,

@@ -12,9 +12,9 @@ const createUser = async (payload: Partial<IUser>) => {
 
   const isUserExist = await User.findOne({ email });
 
-  // if (isUserExist) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "User Already Exist !");
-  // }
+  if (isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User Already Exist !");
+  }
 
   const hashedPassword = await bcryptjs.hash(
     password as string,
@@ -35,7 +35,7 @@ const createUser = async (payload: Partial<IUser>) => {
   return user;
 };
 
-// get all userServices
+// get all user
 const getAllUsers = async () => {
   const users = await User.find({});
 
@@ -47,6 +47,14 @@ const getAllUsers = async () => {
       total: totalUsers,
     },
   };
+};
+
+// get single user
+
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id);
+
+  return user;
 };
 
 // update user
@@ -112,5 +120,6 @@ const updateUser = async (
 export const userServices = {
   createUser,
   updateUser,
+  getSingleUser,
   getAllUsers,
 };
