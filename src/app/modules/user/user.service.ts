@@ -3,6 +3,8 @@ import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/appError";
+import { QueryBuilder } from "../../utils/QueryBulder";
+import { userSearchableFields } from "./user.constant";
 import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 
@@ -12,9 +14,9 @@ const createUser = async (payload: Partial<IUser>) => {
 
   const isUserExist = await User.findOne({ email });
 
-  // if (isUserExist) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "User Already Exist !");
-  // }
+  if (isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User Already Exist !");
+  }
 
   const hashedPassword = await bcryptjs.hash(
     password as string,
@@ -35,18 +37,34 @@ const createUser = async (payload: Partial<IUser>) => {
   return user;
 };
 
-// get all userServices
-const getAllUsers = async () => {
-  const users = await User.find({});
+// get all user
+const getAllUsers = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(User.find(), query);
 
-  const totalUsers = await User.countDocuments();
+  const usersData = queryBuilder
+    .filter()
+    .search(userSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    usersData.build(),
+    queryBuilder.getMeta(),
+  ]);
 
   return {
-    data: users,
-    meta: {
-      total: totalUsers,
-    },
+    data,
+    meta,
   };
+};
+
+// get single user
+
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id);
+
+  return user;
 };
 
 // update user
@@ -112,5 +130,6 @@ const updateUser = async (
 export const userServices = {
   createUser,
   updateUser,
+  getSingleUser,
   getAllUsers,
 };

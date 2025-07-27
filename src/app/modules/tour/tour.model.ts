@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { ITour } from "./tour.interface";
+import { ITour, ITourType } from "./tour.interface";
 
-const tourTypeSchema = new Schema<ITour>(
+const tourTypeSchema = new Schema<ITourType>(
   {
     name: {
       type: String,
@@ -15,7 +15,7 @@ const tourTypeSchema = new Schema<ITour>(
   }
 );
 
-export const TourType = model<ITour>("TourType", tourTypeSchema);
+export const TourType = model<ITourType>("TourType", tourTypeSchema);
 
 const tourSchema = new Schema<ITour>(
   {
@@ -25,7 +25,6 @@ const tourSchema = new Schema<ITour>(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
     },
     description: {
@@ -46,6 +45,12 @@ const tourSchema = new Schema<ITour>(
     },
     endDate: {
       type: Date,
+    },
+    departureLocation: {
+      type: String,
+    },
+    arrivalLocation: {
+      type: String,
     },
     included: {
       type: [String],
@@ -85,5 +90,41 @@ const tourSchema = new Schema<ITour>(
     versionKey: false,
   }
 );
+
+// pre save hook to generat a slug while saving division
+tourSchema.pre("save", async function (next) {
+  if (this.isModified("title")) {
+    let slug = this.title.toLowerCase().split(" ").join("-");
+
+    let counter = 0;
+    while (await Tour.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+
+    this.slug = slug;
+  }
+  next();
+});
+
+// pre save hook to update slug while division name update
+
+tourSchema.pre("findOneAndUpdate", async function (next) {
+  const tour = this.getUpdate() as Partial<ITour>;
+
+  if (tour.title) {
+    let slug = tour.title.toLowerCase().split(" ").join("-");
+
+    let counter = 0;
+    while (await Tour.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+
+    tour.slug = slug;
+  }
+
+  this.setUpdate(tour);
+
+  next();
+});
 
 export const Tour = model<ITour>("Tour", tourSchema);
