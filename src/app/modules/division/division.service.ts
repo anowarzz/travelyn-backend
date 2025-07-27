@@ -1,6 +1,9 @@
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
+
+
+// create division
 const createDivision = async (payload: IDivision) => {
   const existingDivision = await Division.findOne({ name: payload.name });
   if (existingDivision) {
@@ -12,6 +15,8 @@ const createDivision = async (payload: IDivision) => {
   return division;
 };
 
+
+// get all division
 const getAllDivisions = async () => {
   const divisions = await Division.find({});
   const totalDivisions = await Division.countDocuments();
@@ -22,6 +27,9 @@ const getAllDivisions = async () => {
     },
   };
 };
+
+
+// get single division
 const getSingleDivision = async (slug: string) => {
   const division = await Division.findOne({ slug });
   return {
@@ -29,6 +37,8 @@ const getSingleDivision = async (slug: string) => {
   };
 };
 
+
+// update division
 const updateDivision = async (id: string, payload: Partial<IDivision>) => {
   const existingDivision = await Division.findById(id);
   if (!existingDivision) {
