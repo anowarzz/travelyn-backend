@@ -25,7 +25,8 @@ const query = req.query ;
     statusCode: 200,
     success: true,
     message: "Tours retrieved successfully",
-    data: result
+    data: result.data,
+    meta: result.meta
     
   });
 });
