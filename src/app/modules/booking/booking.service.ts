@@ -4,6 +4,8 @@ import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/appError";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { Payment } from "../payment/payment.model";
+import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface";
+import { SSLService } from "../sslCommerz/sslCommerz.service";
 import { Tour } from "../tour/tour.model";
 import { User } from "../user/user.model";
 import { BOOKING_STATUS, IBooking } from "./booking.interface";
@@ -73,11 +75,31 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
       .populate("tour", "title costFrom")
       .populate("payment");
 
+    const userAddress = (updatedBooking?.user as any).address;
+    const userEmail = (updatedBooking?.user as any).email;
+    const userPhoneNumber = (updatedBooking?.user as any).phone;
+    const userName = (updatedBooking?.user as any).name;
+
+    const sslPayload: ISSLCommerz = {
+      address: userAddress,
+      email: userEmail,
+      phoneNumber: userPhoneNumber,
+      name: userName,
+      amount: amount,
+      transactionId: transactionId,
+    };
+
+    const sslPayment = await SSLService.sslPaymentInit(sslPayload);
+
     await session.commitTransaction();
     session.endSession();
 
-    return updatedBooking;
-  } catch (err: any) {
+    return {
+      paymentUrl: sslPayment.GatewayPageURL,
+      booking: updatedBooking,
+    };
+  }
+   catch (err: any) {
     await session.abortTransaction();
     session.endSession();
     throw err;

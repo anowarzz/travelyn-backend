@@ -4,7 +4,7 @@ import { PaymentController } from "./payment.controller";
 const router = express.Router();
 
 // Initialize payment
-router.post("/init-payment/:bookingId", PaymentController.initPayment);
+// router.post("/init-payment/:bookingId", PaymentController.initPayment);
 
 // Payment success
 router.post("/success", PaymentController.successPayment);
