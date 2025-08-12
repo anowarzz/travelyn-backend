@@ -132,7 +132,7 @@ const googleCallBack = catchAsync(
 
     setAuthCookie(res, tokenInfo);
 
-    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`);
+    res.redirect(`${envVars.FRONTEND_DEV_URL}/${redirectTo}`);
   }
 );
 

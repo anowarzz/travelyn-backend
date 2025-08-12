@@ -42,14 +42,29 @@ const updateUser = catchAsync(
   }
 );
 
+// get current user profile
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const result = await userServices.getMe(decodedToken.userId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Your profile Retrieved Successfully",
+      data: result.data,
+    });
+  }
+);
+
 // get all users
 const getAllUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query;
 
-const query = req.query ;
-
-
-    const result = await userServices.getAllUsers(query as Record<string, string>);
+    const result = await userServices.getAllUsers(
+      query as Record<string, string>
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -80,4 +95,5 @@ export const userControllers = {
   getAllUsers,
   getSingleUser,
   updateUser,
+  getMe,
 };

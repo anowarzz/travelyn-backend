@@ -13,6 +13,8 @@ router.post(
   userControllers.createUser
 );
 
+router.get("/me", checkAuth(...Object.values(Role)), userControllers.getMe);
+
 router.get(
   "/all-users",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),

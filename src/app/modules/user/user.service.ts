@@ -67,6 +67,14 @@ const getSingleUser = async (id: string) => {
   return user;
 };
 
+// get current user profile
+const getMe = async (userId: string) => {
+  const user = await User.findById(userId).select("-password");
+  return {
+    data: user,
+  };
+};
+
 // update user
 const updateUser = async (
   userId: string,
@@ -132,4 +140,5 @@ export const userServices = {
   updateUser,
   getSingleUser,
   getAllUsers,
+  getMe,
 };
