@@ -33,10 +33,10 @@ const credentialsLogin = catchAsync(
       setAuthCookie(res, userTokens);
 
       sendResponse(res, {
-        statusCode: httpStatus.CREATED,
         success: true,
+        statusCode: httpStatus.OK,
         message: "User Logged In Successfully",
-        data: { ...rest },
+        data: { accessToken: userTokens.accessToken, user: rest },
       });
     })(req, res, next);
   }
@@ -58,8 +58,8 @@ const getNewAccessToken = catchAsync(
     setAuthCookie(res, tokenInfo);
 
     sendResponse(res, {
+      success: true, 
       statusCode: httpStatus.CREATED,
-      success: true,
       message: "Access Token Retrived Successfully",
       data: tokenInfo,
     });
