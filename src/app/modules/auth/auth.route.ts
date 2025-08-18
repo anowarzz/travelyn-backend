@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import passport from "passport";
+import { envVars } from "../../config/env";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { AuthControllers } from "./auth.controller";
@@ -18,15 +19,17 @@ router.post(
 router.get("/google", (req: Request, res: Response, next: NextFunction) => {
   const redirect = req.query.redirect || "/";
 
-  passport.authenticate(
-    "google",
-    { scope: ["profile", "email"], state: redirect as string }
-  )(req, res, next);
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    state: redirect as string,
+  })(req, res, next);
 });
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect: `${envVars.FRONTEND_DEV_URL}/login`,
+  }),
   AuthControllers.googleCallBack
 );
 
