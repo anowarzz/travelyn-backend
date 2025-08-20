@@ -6,6 +6,10 @@ import { Tour, TourType } from "./tour.model";
 // CREAT TOUR
 const createTour = async (payload: ITour) => {
   const existingTour = await Tour.findOne({ title: payload.title });
+
+    throw new Error("A tour with this title already exists.");
+
+
   if (existingTour) {
     throw new Error("A tour with this title already exists.");
   }
