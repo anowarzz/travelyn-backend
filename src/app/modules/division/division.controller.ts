@@ -9,8 +9,7 @@ import { DivisionService } from "./division.service";
 const createDivision = catchAsync(async (req: Request, res: Response) => {
   const payload: IDivision = {
     ...req.body,
-
-    thumbnail: req.file?.path,
+   thumbnail: req.file?.path,
   };
 
   const result = await DivisionService.createDivision(payload);
