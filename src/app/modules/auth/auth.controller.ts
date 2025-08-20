@@ -89,15 +89,15 @@ const logOut = catchAsync(
   }
 );
 
-// reset password
-const resetPassword = catchAsync(
+// change password
+const changePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
 
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
 
-    await AuthServices.resetPassword(
+    await AuthServices.changePassword(
       oldPassword,
       newPassword,
       decodedToken as JwtPayload
@@ -140,6 +140,6 @@ export const AuthControllers = {
   credentialsLogin,
   getNewAccessToken,
   logOut,
-  resetPassword,
+  changePassword,
   googleCallBack,
 };

@@ -10,11 +10,9 @@ import { Tour } from "../tour/tour.model";
 import { User } from "../user/user.model";
 import { BOOKING_STATUS, IBooking } from "./booking.interface";
 import { Booking } from "./booking.model";
+import { getTransactionId } from "../../utils/getTransactionId";
 
-// generate a unique transaction ID
-const getTransactionId = () => {
-  return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-};
+
 
 // create a booking
 const createBooking = async (payload: Partial<IBooking>, userId: string) => {
